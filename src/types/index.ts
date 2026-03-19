@@ -1,8 +1,7 @@
-// Enum
-// ─── Enums ───────────────────────────────────────────────
+// ─── Enums ────────────────────────────────────────────────
 export type AppointmentStatus = "PENDING" | "FINISHED" | "CANCELED";
 
-// ─── Patient ─────────────────────────────────────────────
+// ─── Patient ──────────────────────────────────────────────
 export interface PatientResponse {
   id: string;
   name: string;
@@ -26,10 +25,10 @@ export interface PatientUpdateRequest {
   age: number;
 }
 
-// ─── Appointment ─────────────────────────────────────────
+// ─── Appointment ──────────────────────────────────────────
 export interface AppointmentResponse {
   id: string;
-  date: string;         // "2026-05-12"
+  date: string;
   title: string;
   notes: string | null;
   imageUrl: string | null;
@@ -38,18 +37,18 @@ export interface AppointmentResponse {
   patientPhone: string;
   dentistName: string;
   dentistId: string;
-  updatedAt: string;    // "2026-05-12T10:30:00"
+  updatedAt: string;
 }
 
 export interface AppointmentRequest {
   patientId: string;
   title: string;
-  date: string;         // "2026-05-12"
+  date: string;
 }
 
 export interface AppointmentUpdateRequest {
   title: string;
-  date: string;         // "2026-05-12"
+  date: string;
 }
 
 export interface AppointmentNoteUpdateRequest {
@@ -57,11 +56,11 @@ export interface AppointmentNoteUpdateRequest {
 }
 
 // ─── Auth ─────────────────────────────────────────────────
-export interface TokenResponse {
-  token: string;
-}
-
 export interface LoginRequest {
   email: string;
   password: string;
+}
+
+export interface TokenResponse {
+  token: string;
 }

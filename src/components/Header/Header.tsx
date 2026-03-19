@@ -11,15 +11,21 @@ export default function Header() {
           </svg>
         </div>
         <span className="font-display text-xl text-gray-800">
-          Grimaldi <span className="text-pink-500">A.</span>
+          Emylle <span className="text-pink-500">A.</span>
         </span>
       </div>
- 
       <div className="flex items-center gap-3">
-        <span className="hidden sm:block text-sm text-gray-400 font-medium">Dra. Emylle</span>
+        <span className="hidden sm:block text-sm text-gray-400 font-medium">
+          Dra. Emylle
+        </span>
         <button className="w-9 h-9 rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center hover:bg-pink-100 transition-colors">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-            <path d="M4 6h16M4 12h16M4 18h16" stroke="#f472b6" strokeWidth="2" strokeLinecap="round" />
+            <path
+              d="M4 6h16M4 12h16M4 18h16"
+              stroke="#f472b6"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </button>
       </div>
