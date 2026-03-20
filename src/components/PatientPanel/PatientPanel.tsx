@@ -111,7 +111,7 @@ export default function PacientePainel({
         }`}
       >
         {/* Banner */}
-        <div className="h-24 bg-linear-to-br from-pink-400 via-rose-300 to-fuchsia-300 relative">
+        <div className="h-20 bg-linear-to-br from-pink-400 via-rose-300 to-fuchsia-300 relative">
           <button
             onClick={onClose}
             className="absolute top-3 right-3 bg-white/25 hover:bg-white/40 text-white rounded-full p-1.5 transition-colors"
@@ -128,11 +128,11 @@ export default function PacientePainel({
         </div>
 
         {/* Avatar */}
-        <div className="flex justify-center -mt-8 px-5">
+        <div className="flex justify-center px-5">
           <button
             type="button"
             onClick={() => setShowNotes(true)}
-            className="rounded-full border-2 border-pink-200 p-1 hover:border-pink-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
+            className="mt-1 rounded-full border-2 border-pink-200 hover:border-pink-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
           >
             <Avatar name={patient.name} size="lg" border />
           </button>
