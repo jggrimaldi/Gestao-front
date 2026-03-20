@@ -1,3 +1,4 @@
+import { MouseEvent } from "react";
 import { PatientResponse } from "../../types";
 import Avatar from "../Avatar/Avatar";
 
@@ -5,6 +6,7 @@ interface PacienteCardProps {
   patient: PatientResponse;
   selected: boolean;
   onClick: () => void;
+  onAvatarClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   animationDelay?: number;
 }
 
@@ -12,14 +14,16 @@ export default function PacienteCard({
   patient,
   selected,
   onClick,
+  onAvatarClick,
   animationDelay = 0,
 }: PacienteCardProps) {
   return (
     <div
+      id={`patient-card-${patient.id}`}
       onClick={onClick}
       className={`
-        fade-up bg-white border-2 rounded-2xl p-4 cursor-pointer card-hover
-        ${selected ? "border-pink-300 bg-pink-50" : "border-gray-100"}
+        fade-up bg-white border-2 rounded-2xl p-4 cursor-pointer card-hover shadow-sm
+        ${selected ? "border-pink-500 bg-pink-50 ring-2 ring-pink-100" : "border-pink-200 hover:border-pink-300"}
       `}
       style={{
         animationDelay: `${animationDelay}ms`,
@@ -28,7 +32,17 @@ export default function PacienteCard({
       }}
     >
       <div className="flex items-center gap-4">
-        <Avatar name={patient.name} size="md" />
+        <button
+          type="button"
+          onClick={(event: MouseEvent<HTMLButtonElement>) => {
+            event.stopPropagation();
+            onAvatarClick?.(event);
+          }}
+          className="rounded-full p-1 hover:bg-pink-100"
+          aria-label="Abrir notas do paciente"
+        >
+          <Avatar name={patient.name} size="md" />
+        </button>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">

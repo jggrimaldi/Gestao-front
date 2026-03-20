@@ -1,4 +1,8 @@
-export default function Header() {
+interface HeaderProps {
+  onToggleSidebar?: () => void;
+}
+
+export default function Header({ onToggleSidebar }: HeaderProps) {
   return (
     <header className="bg-white border-b border-pink-100 px-5 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
       <div className="flex items-center gap-3">
@@ -10,7 +14,7 @@ export default function Header() {
             />
           </svg>
         </div>
-        <span className="font-display text-xl text-gray-800">
+        <span className=" text-xl text-gray-800">
           Emylle <span className="text-pink-500">A.</span>
         </span>
       </div>
@@ -18,7 +22,10 @@ export default function Header() {
         <span className="hidden sm:block text-sm text-gray-400 font-medium">
           Dra. Emylle
         </span>
-        <button className="w-9 h-9 rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center hover:bg-pink-100 transition-colors">
+        <button
+          onClick={() => onToggleSidebar?.()}
+          className="w-9 h-9 rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center hover:bg-pink-100 transition-colors"
+        >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path
               d="M4 6h16M4 12h16M4 18h16"

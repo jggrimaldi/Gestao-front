@@ -37,11 +37,12 @@ export const appointmentService = {
 
   updateNotes: async (
     id: string,
-    data: AppointmentNoteUpdateRequest,
+    notes: string,
+    imageUrl: string,
   ): Promise<AppointmentResponse> => {
     const response = await api.patch<AppointmentResponse>(
-      `/appointments/${id}/notes`,
-      data,
+      `/consultas/${id}/anotacao`,
+      { notes, imageUrl },
     );
     return response.data;
   },

@@ -29,6 +29,21 @@ export const patientService = {
     return response.data;
   },
 
+  updateNotes: async (
+    id: string,
+    notes: string,
+    imageUrl: string,
+  ): Promise<PatientResponse> => {
+    const response = await api.patch<PatientResponse>(
+      `/pacientes/${id}/anotacao`,
+      {
+        notes,
+        imageUrl,
+      },
+    );
+    return response.data;
+  },
+
   delete: async (id: string): Promise<void> => {
     await api.delete(`/patients/${id}`);
   },
