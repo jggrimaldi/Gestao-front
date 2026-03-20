@@ -15,12 +15,12 @@ export function usePatients() {
     try {
       setLoading(true);
       setError(null);
-      const data = USE_MOCK ? mockPatients : await patientService.getAll();
+      const data = USE_MOCK
+        ? mockPatients
+        : await patientService.getAll();
       setPatients(data);
     } catch {
-      setError(
-        "Erro ao carregar pacientes. Verifique se o backend está rodando.",
-      );
+      setError("Erro ao carregar pacientes. Verifique se o backend está rodando.");
     } finally {
       setLoading(false);
     }
@@ -30,5 +30,10 @@ export function usePatients() {
     fetchPatients();
   }, []);
 
-  return { patients, loading, error, refetch: fetchPatients };
+  // Adiciona o paciente diretamente no estado — funciona com mock e com API real
+  function addPatient(newPatient: PatientResponse) {
+    setPatients((prev) => [newPatient, ...prev]);
+  }
+
+  return { patients, loading, error, refetch: fetchPatients, addPatient };
 }
