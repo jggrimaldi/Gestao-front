@@ -3,7 +3,7 @@ import { AppointmentResponse } from "../types";
 import { appointmentService } from "../services/appointmentService";
 import { mockAppointments } from "../mocks/data";
 
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export function useAppointments(patientId: string | null) {
   const [appointments, setAppointments] = useState<AppointmentResponse[]>([]);

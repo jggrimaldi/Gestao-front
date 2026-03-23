@@ -74,7 +74,7 @@ function validate(data: FormData): FormErrors {
 }
 
 // USE_MOCK — troca para false quando o backend estiver rodando
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export default function NovoPacienteForm({
   onSuccess,

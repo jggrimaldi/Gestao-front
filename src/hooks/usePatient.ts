@@ -4,7 +4,7 @@ import { patientService } from "../services/patientService";
 import { mockPatients } from "../mocks/data";
 
 // Troca para false quando o backend estiver rodando
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export function usePatients() {
   const [patients, setPatients] = useState<PatientResponse[]>([]);

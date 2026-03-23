@@ -262,8 +262,7 @@ export default function PacientePainel({
             />
             <div className="mt-3">
               <p className="text-sm text-gray-500 mb-1">
-                Selecione uma imagem para enviar (a URL será gerada
-                automaticamente). Caso queira usar apenas notas, não é
+                Selecione uma imagem para enviar. Caso queira usar apenas notas, não é
                 necessário anexar imagem.
               </p>
               <label className="inline-flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
@@ -296,12 +295,6 @@ export default function PacientePainel({
                 ))}
               </div>
             </div>
-            {imageUrl && (
-              <p className="text-xs text-green-600 mt-2">
-                URL de imagem usada: {imageUrl}
-              </p>
-            )}
-
             <div className="mt-4 flex justify-end gap-2">
               <button
                 onClick={() => setShowNotes(false)}

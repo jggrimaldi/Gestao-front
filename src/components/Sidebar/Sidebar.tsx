@@ -1,5 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FiLogOut, FiEdit2, FiMail, FiX } from "react-icons/fi"; // Ícones profissionais
 
 interface SidebarProps {
   isOpen: boolean;
@@ -12,11 +13,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const displayName = dentist?.name ?? "Emylle";
   const displayEmail = dentist?.email ?? "emylle@clinica.com";
-  const displayCro = dentist?.cro ?? "CRO: 12345-SP";
+  const displayCro = dentist?.cro ?? "12345-SP";
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const handleEditProfile = () => {
+    // Aqui você navegaria para a rota de edição ou abriria um modal
+    navigate("/perfil/editar");
   };
 
   return (
@@ -32,57 +38,68 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-full w-64 bg-pink-100 border-r border-pink-200 shadow-lg z-50 transform transition-transform duration-300 ease-in-out
+          fixed top-0 left-0 h-full w-64 bg-white border-r border-pink-100 shadow-lg z-50 transform transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0 lg:static lg:z-auto lg:shadow-none lg:border-r-0 lg:w-64 lg:min-h-screen
+          lg:translate-x-0 lg:static lg:z-auto lg:shadow-none lg:w-64 lg:min-h-screen flex flex-col
         `}
       >
-        <div className="p-6">
+        <div className="p-6 grow">
           {/* Botão fechar para mobile */}
           <button
             onClick={onClose}
             className="lg:hidden absolute top-4 right-4 text-pink-400 hover:text-pink-600"
           >
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-              <path
-                d="M18 6L6 18M6 6l12 12"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <FiX size={24} />
           </button>
 
-          {/* Foto e info da dentista */}
-          <div className="flex flex-col items-center text-center">
-            <div className="w-20 h-20 mb-4 rounded-full overflow-hidden border-4 border-white shadow">
+          {/* Card de Info da Dentista */}
+          <div className="flex flex-col items-center text-center bg-pink-50 rounded-2xl p-4 border border-pink-100 shadow-sm">
+            <div className="w-20 h-20 mb-3 rounded-full overflow-hidden border-4 border-white shadow-sm relative">
               <img
-                src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&h=100&q=80"
+                src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=100&h=100&q=80"
                 alt={displayName}
                 className="w-full h-full object-cover"
               />
             </div>
-            <h2 className="text-lg font-bold text-gray-800 font-display">
-              DR. {displayName}
+            
+            <h2 className="text-md font-bold text-gray-800 uppercase tracking-tight">
+              Dra. {displayName}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">Dentista Especialista</p>
-            <p className="text-xs text-gray-400 mt-2">{displayCro}</p>
-          </div>
+            <p className="text-xs text-pink-500 font-semibold mb-1">Dentista Especialista</p>
+            <p className="text-[10px] text-gray-400 bg-white px-2 py-0.5 rounded-full border border-pink-100">
+              CRO: {displayCro}
+            </p>
 
-          {/* Menu ou outras infos */}
-          <div className="mt-8 space-y-2">
-            <div className="text-sm text-gray-600">
-              <p>📧 {displayEmail}</p>
-              <p>📞 (81) 99876-5432</p>
-            </div>
-
+            {/* BOTÃO EDITAR DADOS */}
             <button
-              onClick={handleLogout}
-              className="w-full mt-4 rounded-lg bg-pink-400 text-white py-2 hover:bg-pink-500 transition-colors"
+              onClick={handleEditProfile}
+              className="mt-4 w-full flex items-center justify-center gap-2 py-2 bg-white border border-pink-200 text-pink-600 rounded-xl hover:bg-pink-100 transition-all font-bold text-xs shadow-sm"
             >
-              Logout
+              <FiEdit2 size={14} />
+              Editar Perfil
             </button>
           </div>
+
+          {/* Outras Informações (E-mail) */}
+          <div className="mt-6 px-2">
+             <div className="flex items-center gap-3 text-gray-500 text-sm">
+                <FiMail className="text-pink-400" />
+                <span className="truncate">{displayEmail}</span>
+             </div>
+          </div>
+        </div>
+
+        {/* SEÇÃO INFERIOR: BOTÃO LOGOUT MELHORADO */}
+        <div className="p-4 border-t border-pink-50 bg-gray-50/50">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all group"
+          >
+            <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center group-hover:bg-red-100 transition-colors">
+              <FiLogOut className="text-gray-500 group-hover:text-red-500" size={18} />
+            </div>
+            <span className="font-bold text-sm tracking-wide">Sair do Sistema</span>
+          </button>
         </div>
       </aside>
     </>

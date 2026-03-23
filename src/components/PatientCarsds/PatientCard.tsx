@@ -45,7 +45,7 @@ export default function PacienteCard({
             <span className="font-semibold text-gray-800 truncate">
               {patient.name}
             </span>
-            <span className="text-xs text-gray-300 whitespace-nowrap">
+            <span className="text-xs text-gray-400 whitespace-nowrap">
               {patient.age} anos
             </span>
           </div>

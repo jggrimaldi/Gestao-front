@@ -10,7 +10,7 @@ import PacienteCard from "../../components/PatientCarsds/PatientCard";
 import Modal from "../../components/Modal/Modal";
 import NovoPacienteForm from "../../components/NovoPatientForm/PatientForm";
 
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export default function PacientesPage() {
   // ✅ refetch extraído corretamente
