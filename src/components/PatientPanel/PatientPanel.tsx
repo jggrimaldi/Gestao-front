@@ -75,11 +75,10 @@ export default function PacientePainel({
     }
 
     try {
-      const updated = await patientService.updateNotes(
-        patient.id,
-        noteText,
-        imageUrl,
-      );
+      const updated = await patientService.updateNotes(patient.id, {
+        notes: noteText,
+        imageUrl: imageUrl,
+      });
       setNoteText(updated.notes ?? "");
       setImageUrl(updated.imageUrl ?? "");
       onNotesUpdated?.(updated.notes ?? "");
@@ -223,13 +222,13 @@ export default function PacientePainel({
           <div className="flex gap-2 mt-5">
             <button
               onClick={onEdit}
-              className="flex-1 py-2.5 border-2 border-pink-200 text-pink-500 rounded-xl text-sm font-semibold hover:bg-pink-50 transition-colors"
+              className="flex-1 py-2.5 border-2 border-pink-200 text-pink-400 rounded-xl text-sm font-semibold hover:bg-pink-50 transition-colors"
             >
               Editar
             </button>
             <button
               onClick={onNewAppointment}
-              className="flex-1 py-2.5 bg-pink-500 hover:bg-pink-600 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+              className="flex-1 py-2.5 bg-pink-400 hover:bg-pink-500 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
             >
               + Consulta
             </button>
@@ -246,7 +245,7 @@ export default function PacientePainel({
                 setShowNotes(false);
                 onNotesClose?.();
               }}
-              className="absolute top-3 right-3 text-pink-500 bg-pink-100 w-8 h-8 rounded-full flex items-center justify-center font-bold"
+              className="absolute top-3 right-3 text-pink-400 bg-pink-100 w-8 h-8 rounded-full flex items-center justify-center font-bold"
               aria-label="Fechar notas"
             >
               ×
@@ -312,7 +311,7 @@ export default function PacientePainel({
               </button>
               <button
                 onClick={handleSaveNotes}
-                className="px-4 py-2 bg-pink-500 text-white rounded-lg text-sm hover:bg-pink-600"
+                className="px-4 py-2 bg-pink-400 text-white rounded-lg text-sm hover:bg-pink-500"
               >
                 Salvar notas
               </button>

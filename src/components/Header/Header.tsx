@@ -1,30 +1,64 @@
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 interface HeaderProps {
   onToggleSidebar?: () => void;
 }
 
 export default function Header({ onToggleSidebar }: HeaderProps) {
+  const { dentist, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  // Gera iniciais do nome
+  const initials =
+    dentist?.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "D";
+
   return (
     <header className="bg-white border-b border-pink-100 px-5 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 bg-pink-500 rounded-xl flex items-center justify-center shadow-sm">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M12 21.7C17.3 17 22 13.6 22 9.5A5.5 5.5 0 0 0 12 6.1 5.5 5.5 0 0 0 2 9.5c0 4.1 4.7 7.5 10 12.2z"
-              fill="white"
-            />
+        <div className="w-9 h-9 bg-pink-400 rounded-xl flex items-center justify-center shadow-sm">
+          <svg 
+            width="20" 
+            height="20" 
+            viewBox="0 0 64 64" 
+            fill="white"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M32 6C26 6 22 9 18 9C12 9 8 14 8 21C8 30 14 40 16 48C17 52 20 56 24 56C28 56 29 50 32 50C35 50 36 56 40 56C44 56 47 52 48 48C50 40 56 30 56 21C56 14 52 9 46 9C42 9 38 6 32 6Z"/>
           </svg>
         </div>
-        <span className=" text-xl text-gray-800">
-          Emylle <span className="text-pink-500">A.</span>
-        </span>
+        <span className="font-bold text-gray-800 text-lg">OdontoSync</span>
       </div>
-      <div className="flex items-center gap-3">
-        <span className="hidden sm:block text-sm text-gray-400 font-medium">
-          Dra. Emylle
-        </span>
+      <div className="flex items-center gap-4">
+        {/* Dentist Info */}
+        <div className="hidden md:flex items-center gap-3">
+          <div className="text-right">
+            <p className="text-sm font-medium text-gray-800">{dentist?.name}</p>
+            <p className="text-xs text-gray-400">
+              {dentist?.cro || "Dentista"}
+            </p>
+          </div>
+          <div className="w-9 h-9 rounded-full bg-linear-to-br from-pink-400 to-pink-500 flex items-center justify-center text-white font-semibold text-sm">
+            {initials}
+          </div>
+        </div>
+
+        {/* Sidebar Toggle */}
         <button
-          onClick={() => onToggleSidebar?.()}
-          className="w-9 h-9 rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center hover:bg-pink-100 transition-colors"
+          onClick={() => {
+            onToggleSidebar?.();
+          }}
+          className="md:hidden w-9 h-9 rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center hover:bg-pink-100 transition-colors"
         >
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path

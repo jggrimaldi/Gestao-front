@@ -3,21 +3,22 @@ import {
   PatientResponse,
   PatientRequest,
   PatientUpdateRequest,
+  PatientNoteUpdateRequest,
 } from "../types";
 
 export const patientService = {
   getAll: async (): Promise<PatientResponse[]> => {
-    const response = await api.get<PatientResponse[]>("/patients");
+    const response = await api.get<PatientResponse[]>("/pacientes");
     return response.data;
   },
 
   getById: async (id: string): Promise<PatientResponse> => {
-    const response = await api.get<PatientResponse>(`/patients/${id}`);
+    const response = await api.get<PatientResponse>(`/pacientes/${id}`);
     return response.data;
   },
 
   create: async (data: PatientRequest): Promise<PatientResponse> => {
-    const response = await api.post<PatientResponse>("/patients", data);
+    const response = await api.post<PatientResponse>("/pacientes", data);
     return response.data;
   },
 
@@ -25,26 +26,22 @@ export const patientService = {
     id: string,
     data: PatientUpdateRequest,
   ): Promise<PatientResponse> => {
-    const response = await api.put<PatientResponse>(`/patients/${id}`, data);
+    const response = await api.put<PatientResponse>(`/pacientes/${id}`, data);
     return response.data;
   },
 
   updateNotes: async (
     id: string,
-    notes: string,
-    imageUrl: string,
+    data: PatientNoteUpdateRequest,
   ): Promise<PatientResponse> => {
     const response = await api.patch<PatientResponse>(
       `/pacientes/${id}/anotacao`,
-      {
-        notes,
-        imageUrl,
-      },
+      data,
     );
     return response.data;
   },
 
   delete: async (id: string): Promise<void> => {
-    await api.delete(`/patients/${id}`);
+    await api.delete(`/pacientes/${id}`);
   },
 };

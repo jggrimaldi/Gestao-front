@@ -25,6 +25,11 @@ export interface PatientUpdateRequest {
   age: number;
 }
 
+export interface PatientNoteUpdateRequest {
+  notes: string;
+  imageUrl: string | null;
+}
+
 // ─── Appointment ──────────────────────────────────────────
 export interface AppointmentResponse {
   id: string;
@@ -55,6 +60,27 @@ export interface AppointmentNoteUpdateRequest {
   notes: string;
 }
 
+// ─── Dentist ──────────────────────────────────────────────
+export interface DentistResponse {
+  id: string; // UUID
+  name: string;
+  email: string;
+  cro: string | null;
+  role: string;
+}
+
+export interface DentistRequest {
+  name: string;
+  email: string;
+  password: string;
+  cro?: string | null;
+}
+
+export interface DentistLoginRequest {
+  email: string;
+  password: string;
+}
+
 // ─── Auth ─────────────────────────────────────────────────
 export interface LoginRequest {
   email: string;
@@ -63,4 +89,9 @@ export interface LoginRequest {
 
 export interface TokenResponse {
   token: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  dentist: DentistResponse;
 }

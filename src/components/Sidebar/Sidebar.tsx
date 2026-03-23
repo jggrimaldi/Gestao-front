@@ -1,9 +1,24 @@
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { dentist, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const displayName = dentist?.name ?? "Emylle";
+  const displayEmail = dentist?.email ?? "emylle@clinica.com";
+  const displayCro = dentist?.cro ?? "CRO: 12345-SP";
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <>
       {/* Overlay para mobile */}
@@ -26,7 +41,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* Botão fechar para mobile */}
           <button
             onClick={onClose}
-            className="lg:hidden absolute top-4 right-4 text-pink-500 hover:text-pink-700"
+            className="lg:hidden absolute top-4 right-4 text-pink-400 hover:text-pink-600"
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
               <path
@@ -43,23 +58,30 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <div className="w-20 h-20 mb-4 rounded-full overflow-hidden border-4 border-white shadow">
               <img
                 src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&h=100&q=80"
-                alt="Dra. Emylle"
+                alt={displayName}
                 className="w-full h-full object-cover"
               />
             </div>
             <h2 className="text-lg font-bold text-gray-800 font-display">
-              Dra. Emylle
+              DR. {displayName}
             </h2>
             <p className="text-sm text-gray-500 mt-1">Dentista Especialista</p>
-            <p className="text-xs text-gray-400 mt-2">CRO: 12345-SP</p>
+            <p className="text-xs text-gray-400 mt-2">{displayCro}</p>
           </div>
 
           {/* Menu ou outras infos */}
           <div className="mt-8 space-y-2">
             <div className="text-sm text-gray-600">
-              <p>📧 emylle@clinica.com</p>
+              <p>📧 {displayEmail}</p>
               <p>📞 (81) 99876-5432</p>
             </div>
+
+            <button
+              onClick={handleLogout}
+              className="w-full mt-4 rounded-lg bg-pink-400 text-white py-2 hover:bg-pink-500 transition-colors"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </aside>

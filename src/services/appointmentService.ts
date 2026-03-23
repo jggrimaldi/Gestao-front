@@ -9,18 +9,18 @@ import {
 export const appointmentService = {
   getByPatient: async (patientId: string): Promise<AppointmentResponse[]> => {
     const response = await api.get<AppointmentResponse[]>(
-      `/appointments/patient/${patientId}`,
+      `/consultas/paciente/${patientId}`,
     );
     return response.data;
   },
 
   getById: async (id: string): Promise<AppointmentResponse> => {
-    const response = await api.get<AppointmentResponse>(`/appointments/${id}`);
+    const response = await api.get<AppointmentResponse>(`/consultas/${id}`);
     return response.data;
   },
 
   create: async (data: AppointmentRequest): Promise<AppointmentResponse> => {
-    const response = await api.post<AppointmentResponse>("/appointments", data);
+    const response = await api.post<AppointmentResponse>("/consultas", data);
     return response.data;
   },
 
@@ -29,7 +29,7 @@ export const appointmentService = {
     data: AppointmentUpdateRequest,
   ): Promise<AppointmentResponse> => {
     const response = await api.put<AppointmentResponse>(
-      `/appointments/${id}`,
+      `/consultas/${id}/detalhes`,
       data,
     );
     return response.data;
@@ -48,6 +48,6 @@ export const appointmentService = {
   },
 
   delete: async (id: string): Promise<void> => {
-    await api.delete(`/appointments/${id}`);
+    await api.delete(`/consultas/${id}`);
   },
 };

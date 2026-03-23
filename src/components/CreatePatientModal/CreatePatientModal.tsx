@@ -165,7 +165,7 @@ export default function CreatePatientModal({
             <button
               onClick={handleSubmit}
               disabled={creating}
-              className="flex-1 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-pink-400 hover:bg-pink-500 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {creating ? (
                 <div className="flex items-center justify-center gap-2">

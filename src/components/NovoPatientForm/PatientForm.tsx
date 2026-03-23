@@ -76,7 +76,10 @@ function validate(data: FormData): FormErrors {
 // USE_MOCK — troca para false quando o backend estiver rodando
 const USE_MOCK = true;
 
-export default function NovoPacienteForm({ onSuccess, onCancel }: NovoPacienteFormProps) {
+export default function NovoPacienteForm({
+  onSuccess,
+  onCancel,
+}: NovoPacienteFormProps) {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     cpf: "",
@@ -191,9 +194,19 @@ export default function NovoPacienteForm({ onSuccess, onCancel }: NovoPacienteFo
         {/* Erro da API */}
         {apiError && (
           <div className="bg-red-50 border border-red-100 text-red-400 text-sm rounded-xl px-4 py-3 flex items-center gap-2">
-            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" className="shrink-0">
-              <path d="M12 8v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <svg
+              width="15"
+              height="15"
+              fill="none"
+              viewBox="0 0 24 24"
+              className="shrink-0"
+            >
+              <path
+                d="M12 8v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
             {apiError}
           </div>
@@ -213,7 +226,7 @@ export default function NovoPacienteForm({ onSuccess, onCancel }: NovoPacienteFo
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 py-2.5 bg-pink-500 hover:bg-pink-600 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm disabled:opacity-60 flex items-center justify-center gap-2"
+          className="flex-1 py-2.5 bg-pink-400 hover:bg-pink-500 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm disabled:opacity-60 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>

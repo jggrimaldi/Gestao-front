@@ -114,7 +114,7 @@ export default function PacientesPage() {
                 {/* ✅ onClick abrindo o modal */}
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 active:bg-pink-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm"
+                  className="flex items-center gap-2 bg-pink-400 hover:bg-pink-500 active:bg-pink-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm"
                 >
                   <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
                     <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
@@ -126,7 +126,7 @@ export default function PacientesPage() {
  
               {/* Busca */}
               <div className="relative mb-5">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" width="16" height="16" fill="none" viewBox="0 0 24 24">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" width="16" height="16" fill="none" viewBox="0 0 24 24">
                   <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
                 </svg>
                 <input
@@ -134,7 +134,7 @@ export default function PacientesPage() {
                   placeholder="Buscar paciente..."
                   value={busca}
                   onChange={(e) => setBusca(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-white border-2 border-gray-100 rounded-xl text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-50 transition-all"
+                  className="w-full pl-11 pr-4 py-3 bg-white border-2 border-gray-100 rounded-xl text-sm text-black-700 placeholder-gray-400 focus:outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-50 transition-all"
                 />
               </div>
  
