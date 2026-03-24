@@ -14,6 +14,11 @@ export const appointmentService = {
     return response.data;
   },
 
+  getAll: async (): Promise<AppointmentResponse[]> => {
+    const response = await api.get<AppointmentResponse[]>("/consultas");
+    return response.data;
+  },
+
   getById: async (id: string): Promise<AppointmentResponse> => {
     const response = await api.get<AppointmentResponse>(`/consultas/${id}`);
     return response.data;
@@ -28,7 +33,7 @@ export const appointmentService = {
     id: string,
     data: AppointmentUpdateRequest,
   ): Promise<AppointmentResponse> => {
-    const response = await api.put<AppointmentResponse>(
+    const response = await api.patch<AppointmentResponse>(
       `/consultas/${id}/detalhes`,
       data,
     );

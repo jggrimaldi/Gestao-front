@@ -3,12 +3,13 @@ import Header from "../../components/Header/Header";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
 import { AppointmentResponse, PatientResponse } from "../../types";
-import { mockAppointments } from "../../mocks/data";
 import { usePatients } from "../../hooks/usePatient";
+import { useAppointments } from "../../hooks/useAppointments";
 import PacientePainel from "../../components/PatientPanel/PatientPanel";
 import PacienteCard from "../../components/PatientCarsds/PatientCard";
 import Modal from "../../components/Modal/Modal";
 import NovoPacienteForm from "../../components/NovoPatientForm/PatientForm";
+import NovoAppointmentForm from "../../components/NovoAppointmentForm/AppointmentForm";
 
 const USE_MOCK = false;
 
@@ -24,6 +25,8 @@ export default function PacientesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [patientToEdit, setPatientToEdit] = useState<PatientResponse | null>(null);
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false);
+  const [appointmentPatient, setAppointmentPatient] = useState<PatientResponse | null>(null);
  
   const filtered = patients.filter(
     (p) =>
@@ -32,9 +35,11 @@ export default function PacientesPage() {
       p.phone.includes(busca),
   );
  
-  const appointments: AppointmentResponse[] = selectedPatient
-    ? mockAppointments.filter((a) => a.patientName === selectedPatient.name)
-    : [];
+  const {
+    appointments,
+    loading: loadingAppointments,
+    refetch: refetchAppointments,
+  } = useAppointments(selectedPatient?.id ?? null);
  
   function handleSelect(patient: PatientResponse) {
     const isSamePatient = selectedPatient?.id === patient.id;
@@ -102,6 +107,23 @@ export default function PacientesPage() {
     setEditModalOpen(false);
     setPatientToEdit(null);
     if (restore) setSelectedPatient(restore);
+  }
+
+  function handleOpenNewAppointment(patient: PatientResponse) {
+    setAppointmentPatient(patient);
+    setAppointmentModalOpen(true);
+    setOpenNotes(false);
+  }
+
+  function handleCloseNewAppointment() {
+    setAppointmentModalOpen(false);
+    setAppointmentPatient(null);
+  }
+
+  function handleNewAppointmentSuccess(created: AppointmentResponse) {
+    setAppointmentModalOpen(false);
+    setAppointmentPatient(null);
+    refetchAppointments();
   }
  
   return (
@@ -228,12 +250,12 @@ export default function PacientesPage() {
             <PacientePainel
               patient={selectedPatient}
               appointments={appointments}
-              loadingAppointments={false}
+              loadingAppointments={loadingAppointments}
               onClose={() => {
                 setSelectedPatient(null);
                 setOpenNotes(false);
               }}
-              onNewAppointment={() => console.log("Nova consulta")}
+              onNewAppointment={() => handleOpenNewAppointment(selectedPatient)}
               onEdit={() => handleOpenEditPatient(selectedPatient)}
               onSelectAppointment={handleSelectAppointment}
               onNotesUpdated={(notes) =>
@@ -266,6 +288,21 @@ export default function PacientesPage() {
           onSuccess={handleEditPatientSuccess}
           onCancel={handleCloseEditModal}
         />
+      </Modal>
+
+      {/* Modal nova consulta */}
+      <Modal
+        isOpen={appointmentModalOpen}
+        onClose={handleCloseNewAppointment}
+        title="Nova Consulta"
+      >
+        {appointmentPatient && (
+          <NovoAppointmentForm
+            patient={appointmentPatient}
+            onSuccess={handleNewAppointmentSuccess}
+            onCancel={handleCloseNewAppointment}
+          />
+        )}
       </Modal>
     </div>
   );

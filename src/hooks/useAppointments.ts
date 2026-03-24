@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AppointmentResponse } from "../types";
 import { appointmentService } from "../services/appointmentService";
 import { mockAppointments } from "../mocks/data";
@@ -10,31 +10,29 @@ export function useAppointments(patientId: string | null) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchAppointments = useCallback(async () => {
     if (!patientId) {
       setAppointments([]);
       return;
     }
 
-    async function fetchAppointments() {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = USE_MOCK
-          ? mockAppointments.filter(
-              (a) => a.patientName === appointments[0]?.patientName,
-            )
-          : await appointmentService.getByPatient(patientId!);
-        setAppointments(data);
-      } catch {
-        setError("Erro ao carregar consultas.");
-      } finally {
-        setLoading(false);
-      }
+    try {
+      setLoading(true);
+      setError(null);
+      const data = USE_MOCK
+        ? mockAppointments
+        : await appointmentService.getByPatient(patientId);
+      setAppointments(data);
+    } catch {
+      setError("Erro ao carregar consultas.");
+    } finally {
+      setLoading(false);
     }
-
-    fetchAppointments();
   }, [patientId]);
 
-  return { appointments, loading, error };
+  useEffect(() => {
+    fetchAppointments();
+  }, [fetchAppointments]);
+
+  return { appointments, loading, error, refetch: fetchAppointments };
 }
