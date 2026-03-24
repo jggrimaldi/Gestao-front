@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../Input/Input";
-import { PatientRequest, PatientResponse } from "../../types";
+import { PatientRequest, PatientResponse, PatientUpdateRequest } from "../../types";
 import { patientService } from "../../services/patientService";
 
 interface NovoPacienteFormProps {
   onSuccess: (patient: PatientResponse) => void;
   onCancel: () => void;
+  patient?: PatientResponse | null;
 }
 
 interface FormData {
@@ -41,7 +42,7 @@ function formatPhone(value: string): string {
     .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
 }
 
-function validate(data: FormData): FormErrors {
+function validate(data: FormData, mode: "create" | "edit"): FormErrors {
   const errors: FormErrors = {};
 
   if (!data.name.trim()) {
@@ -50,11 +51,13 @@ function validate(data: FormData): FormErrors {
     errors.name = "Nome deve ter ao menos 3 caracteres";
   }
 
-  const cpfClean = data.cpf.replace(/\D/g, "");
-  if (!cpfClean) {
-    errors.cpf = "CPF é obrigatório";
-  } else if (cpfClean.length !== 11) {
-    errors.cpf = "CPF deve ter 11 dígitos";
+  if (mode === "create") {
+    const cpfClean = data.cpf.replace(/\D/g, "");
+    if (!cpfClean) {
+      errors.cpf = "CPF é obrigatório";
+    } else if (cpfClean.length !== 11) {
+      errors.cpf = "CPF deve ter 11 dígitos";
+    }
   }
 
   const phoneClean = data.phone.replace(/\D/g, "");
@@ -79,7 +82,9 @@ const USE_MOCK = false;
 export default function NovoPacienteForm({
   onSuccess,
   onCancel,
+  patient = null,
 }: NovoPacienteFormProps) {
+  const mode: "create" | "edit" = patient ? "edit" : "create";
   const [formData, setFormData] = useState<FormData>({
     name: "",
     cpf: "",
@@ -89,6 +94,24 @@ export default function NovoPacienteForm({
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!patient) {
+      setFormData({ name: "", cpf: "", phone: "", age: "" });
+      setErrors({});
+      setApiError(null);
+      return;
+    }
+
+    setFormData({
+      name: patient.name ?? "",
+      cpf: formatCpf(patient.cpf ?? ""),
+      phone: formatPhone(patient.phone ?? ""),
+      age: patient.age != null ? String(patient.age) : "",
+    });
+    setErrors({});
+    setApiError(null);
+  }, [patient]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -109,15 +132,14 @@ export default function NovoPacienteForm({
     e.preventDefault();
     setApiError(null);
 
-    const validationErrors = validate(formData);
+    const validationErrors = validate(formData, mode);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    const payload: PatientRequest = {
+    const common = {
       name: formData.name.trim(),
-      cpf: formData.cpf.replace(/\D/g, ""),
       phone: formData.phone.replace(/\D/g, ""),
       age: Number(formData.age),
     };
@@ -128,20 +150,51 @@ export default function NovoPacienteForm({
       if (USE_MOCK) {
         // Simula resposta da API
         await new Promise((res) => setTimeout(res, 800));
-        const mockResponse: PatientResponse = {
-          id: crypto.randomUUID(),
-          ...payload,
-          notes: null,
-          imageUrl: null,
-        };
-        onSuccess(mockResponse);
+
+        if (mode === "create") {
+          const payload: PatientRequest = {
+            ...common,
+            cpf: formData.cpf.replace(/\D/g, ""),
+          };
+          const mockResponse: PatientResponse = {
+            id: crypto.randomUUID(),
+            ...payload,
+            notes: null,
+            imageUrl: null,
+          };
+          onSuccess(mockResponse);
+        } else {
+          const payload: PatientUpdateRequest = common;
+          const mockResponse: PatientResponse = {
+            ...(patient as PatientResponse),
+            ...payload,
+          };
+          onSuccess(mockResponse);
+        }
       } else {
-        const created = await patientService.create(payload);
-        onSuccess(created);
+        if (mode === "create") {
+          const payload: PatientRequest = {
+            ...common,
+            cpf: formData.cpf.replace(/\D/g, ""),
+          };
+          const created = await patientService.create(payload);
+          onSuccess(created);
+        } else {
+          const payload: PatientUpdateRequest = common;
+          const updated = await patientService.update(
+            (patient as PatientResponse).id,
+            payload,
+          );
+          onSuccess(updated);
+        }
       }
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : "Erro ao cadastrar paciente.";
+        err instanceof Error
+          ? err.message
+          : mode === "create"
+            ? "Erro ao cadastrar paciente."
+            : "Erro ao editar paciente.";
       setApiError(message);
     } finally {
       setLoading(false);
@@ -167,7 +220,8 @@ export default function NovoPacienteForm({
           onChange={handleChange}
           placeholder="000.000.000-00"
           error={errors.cpf}
-          required
+          required={mode === "create"}
+          disabled={mode === "edit"}
         />
         <div className="grid grid-cols-2 gap-3">
           <Input
@@ -234,7 +288,7 @@ export default function NovoPacienteForm({
               Salvando...
             </>
           ) : (
-            "Cadastrar Paciente"
+            mode === "create" ? "Cadastrar Paciente" : "Salvar Alterações"
           )}
         </button>
       </div>

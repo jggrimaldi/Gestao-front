@@ -14,13 +14,16 @@ const USE_MOCK = false;
 
 export default function PacientesPage() {
   // ✅ refetch extraído corretamente
-  const { patients, loading, error, refetch, addPatient } = usePatients();
+  const { patients, loading, error, refetch, addPatient, updatePatient } =
+    usePatients();
  
   const [busca, setBusca] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<PatientResponse | null>(null);
   const [openNotes, setOpenNotes] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [patientToEdit, setPatientToEdit] = useState<PatientResponse | null>(null);
  
   const filtered = patients.filter(
     (p) =>
@@ -72,6 +75,33 @@ export default function PacientesPage() {
       refetch();
     }
     setSelectedPatient(newPatient);
+  }
+
+  function handleOpenEditPatient(patient: PatientResponse) {
+    setPatientToEdit(patient);
+    setEditModalOpen(true);
+    setSelectedPatient(null);
+    setOpenNotes(false);
+  }
+
+  function handleEditPatientSuccess(updatedPatient: PatientResponse) {
+    setEditModalOpen(false);
+    setPatientToEdit(null);
+
+    if (USE_MOCK) {
+      updatePatient(updatedPatient);
+    } else {
+      refetch();
+    }
+
+    setSelectedPatient(updatedPatient);
+  }
+
+  function handleCloseEditModal() {
+    const restore = patientToEdit;
+    setEditModalOpen(false);
+    setPatientToEdit(null);
+    if (restore) setSelectedPatient(restore);
   }
  
   return (
@@ -204,7 +234,7 @@ export default function PacientesPage() {
                 setOpenNotes(false);
               }}
               onNewAppointment={() => console.log("Nova consulta")}
-              onEdit={() => console.log("Editar paciente")}
+              onEdit={() => handleOpenEditPatient(selectedPatient)}
               onSelectAppointment={handleSelectAppointment}
               onNotesUpdated={(notes) =>
                 setSelectedPatient((prev) => (prev ? { ...prev, notes } : prev))
@@ -226,6 +256,15 @@ export default function PacientesPage() {
         <NovoPacienteForm
           onSuccess={handleNewPatientSuccess}
           onCancel={() => setModalOpen(false)}
+        />
+      </Modal>
+
+      {/* Modal editar paciente */}
+      <Modal isOpen={editModalOpen} onClose={handleCloseEditModal} title="Editar Paciente">
+        <NovoPacienteForm
+          patient={patientToEdit}
+          onSuccess={handleEditPatientSuccess}
+          onCancel={handleCloseEditModal}
         />
       </Modal>
     </div>

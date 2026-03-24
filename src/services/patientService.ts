@@ -26,7 +26,10 @@ export const patientService = {
     id: string,
     data: PatientUpdateRequest,
   ): Promise<PatientResponse> => {
-    const response = await api.put<PatientResponse>(`/pacientes/${id}`, data);
+    const response = await api.patch<PatientResponse>(
+      `/pacientes/${id}/detalhes`,
+      data,
+    );
     return response.data;
   },
 

@@ -35,5 +35,20 @@ export function usePatients() {
     setPatients((prev) => [newPatient, ...prev]);
   }
 
-  return { patients, loading, error, refetch: fetchPatients, addPatient };
+  function updatePatient(updatedPatient: PatientResponse) {
+    setPatients((prev) =>
+      prev.map((patient) =>
+        patient.id === updatedPatient.id ? updatedPatient : patient,
+      ),
+    );
+  }
+
+  return {
+    patients,
+    loading,
+    error,
+    refetch: fetchPatients,
+    addPatient,
+    updatePatient,
+  };
 }

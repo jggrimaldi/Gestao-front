@@ -98,7 +98,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center group-hover:bg-red-100 transition-colors">
               <FiLogOut className="text-gray-500 group-hover:text-red-500" size={18} />
             </div>
-            <span className="font-bold text-sm tracking-wide">Sair do Sistema</span>
+            <span className="font-bold text-sm tracking-wide">Logout</span>
           </button>
         </div>
       </aside>

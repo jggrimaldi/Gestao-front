@@ -7,6 +7,7 @@ interface InputProps {
   placeholder?: string;
   error?: string;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export default function Input({
@@ -18,6 +19,7 @@ export default function Input({
   placeholder,
   error,
   required = false,
+  disabled = false,
 }: InputProps) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -32,9 +34,10 @@ export default function Input({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        disabled={disabled}
         className={`
           w-full px-4 py-2.5 bg-gray-50 border-2 rounded-xl text-sm text-gray-700
-          placeholder-gray-500 focus:outline-none focus:bg-white transition-all
+          placeholder-gray-500 focus:outline-none focus:bg-white transition-all disabled:opacity-60 disabled:cursor-not-allowed
           ${
             error
               ? "border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-50"
