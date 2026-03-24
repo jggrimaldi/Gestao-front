@@ -58,6 +58,7 @@ export interface AppointmentUpdateRequest {
 
 export interface AppointmentNoteUpdateRequest {
   notes: string;
+  imageUrl: string | null;
 }
 
 // ─── Dentist ──────────────────────────────────────────────

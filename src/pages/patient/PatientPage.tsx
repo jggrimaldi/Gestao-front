@@ -10,6 +10,7 @@ import PacienteCard from "../../components/PatientCarsds/PatientCard";
 import Modal from "../../components/Modal/Modal";
 import NovoPacienteForm from "../../components/NovoPatientForm/PatientForm";
 import NovoAppointmentForm from "../../components/NovoAppointmentForm/AppointmentForm";
+import AppointmentPanel from "../../components/AppointmentPanel/AppointmentPanel";
 
 const USE_MOCK = false;
 
@@ -27,6 +28,7 @@ export default function PacientesPage() {
   const [patientToEdit, setPatientToEdit] = useState<PatientResponse | null>(null);
   const [appointmentModalOpen, setAppointmentModalOpen] = useState(false);
   const [appointmentPatient, setAppointmentPatient] = useState<PatientResponse | null>(null);
+  const [appointmentPanelId, setAppointmentPanelId] = useState<string | null>(null);
  
   const filtered = patients.filter(
     (p) =>
@@ -60,8 +62,7 @@ export default function PacientesPage() {
   }
  
   function handleSelectAppointment(appointment: AppointmentResponse) {
-    console.log("Navegar para consulta:", appointment.id);
-    // TODO: navigate(`/appointments/${appointment.id}`)
+    setAppointmentPanelId(appointment.id);
   }
  
   function handleOpenNotes(patient: PatientResponse) {
@@ -304,6 +305,14 @@ export default function PacientesPage() {
           />
         )}
       </Modal>
+
+      {appointmentPanelId && (
+        <AppointmentPanel
+          appointmentId={appointmentPanelId}
+          onClose={() => setAppointmentPanelId(null)}
+          onUpdated={() => refetchAppointments()}
+        />
+      )}
     </div>
   );
 }

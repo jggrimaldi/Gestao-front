@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { PatientResponse, AppointmentResponse } from "../../types";
 import Avatar from "../Avatar/Avatar";
 import { formatDate, formatStatus } from "../../utils/helpers";
@@ -41,8 +41,9 @@ export default function PacientePainel({
 }: PacientePainelProps) {
   const [showNotes, setShowNotes] = useState(false);
   const [noteText, setNoteText] = useState(patient.notes ?? "");
-  const [imageUrl, setImageUrl] = useState(patient.imageUrl ?? "");
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<
+    Array<{ name: string; dataUrl: string }>
+  >([]);
 
   useEffect(() => {
     setShowNotes(Boolean(initialNotesOpen));
@@ -51,36 +52,56 @@ export default function PacientePainel({
   useEffect(() => {
     if (showNotes) {
       setNoteText(patient.notes ?? "");
+      setUploadedImages(
+        patient.imageUrl ? [{ name: "image", dataUrl: patient.imageUrl }] : [],
+      );
     }
-  }, [showNotes, patient.notes]);
+  }, [showNotes, patient.notes, patient.imageUrl]);
 
-  const noteCount = useMemo(() => uploadedImages.length, [uploadedImages]);
+  async function fileToDataUrl(file: File): Promise<string> {
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error("Falha ao ler arquivo"));
+      reader.readAsDataURL(file);
+    });
+  }
 
-  const onImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const onImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
     const fileArray = Array.from(files);
-    setUploadedImages((prev) => [...prev, ...fileArray]);
-
-    // usa o primeiro arquivo como imageUrl (temporário local) para enviar ao backend.
-    if (fileArray.length > 0) {
-      setImageUrl(URL.createObjectURL(fileArray[0]));
-    }
+    const previews = await Promise.all(
+      fileArray.map(async (file) => ({
+        name: file.name,
+        dataUrl: await fileToDataUrl(file),
+      })),
+    );
+    setUploadedImages((prev) => [...prev, ...previews]);
   };
 
+  function handleDeleteImage(index: number) {
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+  }
+
   const handleSaveNotes = async () => {
-    if (!noteText.trim() && !imageUrl.trim()) {
-      alert("Por favor, preencha notas ou informe URL de imagem.");
+    const firstImage = uploadedImages[0]?.dataUrl ?? null;
+    if (!noteText.trim() && !firstImage) {
+      alert("Por favor, preencha notas ou anexe uma imagem.");
       return;
     }
 
     try {
       const updated = await patientService.updateNotes(patient.id, {
         notes: noteText,
-        imageUrl: imageUrl,
+        imageUrl: firstImage,
       });
       setNoteText(updated.notes ?? "");
-      setImageUrl(updated.imageUrl ?? "");
+      setUploadedImages(
+        updated.imageUrl
+          ? [{ name: "image", dataUrl: updated.imageUrl }]
+          : [],
+      );
       onNotesUpdated?.(updated.notes ?? "");
       setShowNotes(false);
       onNotesClose?.();
@@ -238,7 +259,7 @@ export default function PacientePainel({
 
       {showNotes && (
         <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl border-2 border-pink-200 p-5 relative">
+          <div className="w-full max-w-3xl rounded-2xl bg-white shadow-2xl border-2 border-pink-200 p-5 relative">
             <button
               type="button"
               onClick={() => {
@@ -253,48 +274,62 @@ export default function PacientePainel({
             <h3 className="mb-3 text-lg font-semibold text-gray-700">
               Notas de {patient.name}
             </h3>
-            <textarea
-              rows={6}
-              value={noteText}
-              onChange={(e) => setNoteText(e.target.value)}
-              className="w-full resize-none border border-gray-200 rounded-xl p-3 text-sm text-gray-700 focus:outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-100"
-              placeholder="Escreva notas do paciente..."
-            />
-            <div className="mt-3">
-              <p className="text-sm text-gray-500 mb-1">
-                Selecione uma imagem para enviar. Caso queira usar apenas notas, não é
-                necessário anexar imagem.
-              </p>
-              <label className="inline-flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={onImageChange}
-                  className="hidden"
-                />
-                <span className="rounded-lg bg-pink-50 px-3 py-1.5 border border-pink-200 text-pink-600">
-                  Adicionar fotos
-                </span>
-              </label>
-              <p className="text-xs text-gray-400 mt-1">
-                {noteCount} foto(s) selecionada(s)
-              </p>
-              <div className="grid grid-cols-3 gap-2 mt-2">
-                {uploadedImages.map((file, index) => (
-                  <div
-                    key={`${file.name}-${index}`}
-                    className="h-20 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden"
-                  >
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={file.name}
-                      className="h-full object-cover"
-                    />
+
+            <div className="border-2 border-gray-100 rounded-xl overflow-hidden">
+              <textarea
+                rows={10}
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
+                className="w-full resize-none p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-100"
+                placeholder="Escreva notas do paciente..."
+              />
+
+              {uploadedImages.length > 0 && (
+                <div className="border-t border-gray-100 px-3 py-3 bg-white">
+                  <div className="grid grid-cols-3 gap-2">
+                    {uploadedImages.map((img, index) => (
+                      <div
+                        key={`${img.name}-${index}`}
+                        className="relative h-24 rounded-xl bg-gray-100 overflow-hidden"
+                      >
+                        <img
+                          src={img.dataUrl}
+                          alt={img.name}
+                          className="h-full w-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteImage(index)}
+                          className="absolute top-1 right-1 w-7 h-7 rounded-full bg-black/55 hover:bg-black/70 text-white flex items-center justify-center"
+                          aria-label="Apagar foto"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+              )}
+
+              <div className="border-t border-gray-100 px-3 py-2 bg-gray-50 flex items-center justify-between gap-3">
+                <label className="inline-flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={onImageChange}
+                    className="hidden"
+                  />
+                  <span className="rounded-lg bg-pink-50 px-2.5 py-1 border border-pink-200 text-pink-600 font-semibold">
+                    Foto
+                  </span>
+                </label>
+                <p className="text-xs text-gray-400">
+                  {uploadedImages.length} foto(s)
+                </p>
               </div>
             </div>
+
             <div className="mt-4 flex justify-end gap-2">
               <button
                 onClick={() => setShowNotes(false)}
