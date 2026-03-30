@@ -144,7 +144,7 @@ export default function LoginPage() {
               </div>
             </div>
             <h1 className="text-2xl font-bold text-white">
-              Emylle <span className="font-light">Odonto</span>
+              Odonto <span className="font-light">sync</span>
             </h1>
             <p className="text-pink-100 text-sm mt-2">
               Gestão de Consultório Odontológico
