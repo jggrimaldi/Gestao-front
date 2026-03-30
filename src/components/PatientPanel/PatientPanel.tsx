@@ -14,7 +14,7 @@ interface PacientePainelProps {
   onNewAppointment: () => void;
   onEdit: () => void;
   onSelectAppointment: (appointment: AppointmentResponse) => void;
-  onNotesUpdated?: (notes: string) => void;
+  onPatientUpdated?: (patient: PatientResponse) => void;
   overlay?: boolean;
   initialNotesOpen?: boolean;
   onNotesClose?: () => void;
@@ -34,7 +34,7 @@ export default function PacientePainel({
   onNewAppointment,
   onEdit,
   onSelectAppointment,
-  onNotesUpdated,
+  onPatientUpdated,
   overlay = false,
   initialNotesOpen = false,
   onNotesClose,
@@ -86,10 +86,6 @@ export default function PacientePainel({
 
   const handleSaveNotes = async () => {
     const firstImage = uploadedImages[0]?.dataUrl ?? null;
-    if (!noteText.trim() && !firstImage) {
-      alert("Por favor, preencha notas ou anexe uma imagem.");
-      return;
-    }
 
     try {
       const updated = await patientService.updateNotes(patient.id, {
@@ -102,7 +98,7 @@ export default function PacientePainel({
           ? [{ name: "image", dataUrl: updated.imageUrl }]
           : [],
       );
-      onNotesUpdated?.(updated.notes ?? "");
+      onPatientUpdated?.(updated);
       setShowNotes(false);
       onNotesClose?.();
     } catch (error: any) {

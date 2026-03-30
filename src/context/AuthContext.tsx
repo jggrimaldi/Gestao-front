@@ -5,7 +5,12 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-import { DentistResponse } from "../types";
+import {
+  DentistRequest,
+  DentistResponse,
+  DentistUpdateProfileRequest,
+  DentistUpdateRequest,
+} from "../types";
 import { authService } from "../services/authService";
 
 interface AuthContextType {
@@ -14,7 +19,11 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: any) => Promise<void>;
+  register: (data: DentistRequest) => Promise<void>;
+  updateDentist: (data: DentistUpdateRequest) => Promise<DentistResponse>;
+  updateDentistProfileImage: (
+    data: DentistUpdateProfileRequest,
+  ) => Promise<DentistResponse>;
   logout: () => void;
 }
 
@@ -25,7 +34,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [dentist, setDentist] = useState<DentistResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Inicializar com dados do localStorage
   useEffect(() => {
     const storedToken = authService.getToken();
     const storedDentist = authService.getCurrentDentist();
@@ -44,10 +52,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setDentist(response.dentist);
   }
 
-  async function register(data: any) {
+  async function register(data: DentistRequest) {
     const response = await authService.register(data);
     setToken(response.token);
     setDentist(response.dentist);
+  }
+
+  async function updateDentist(data: DentistUpdateRequest) {
+    if (!dentist) {
+      throw new Error("Dentista não encontrado.");
+    }
+
+    const updatedDentist = await authService.updateCurrentDentist(data);
+    setDentist(updatedDentist);
+    return updatedDentist;
+  }
+
+  async function updateDentistProfileImage(data: DentistUpdateProfileRequest) {
+    if (!dentist) {
+      throw new Error("Dentista não encontrado.");
+    }
+
+    const updatedDentist = await authService.updateCurrentDentistProfileImage(data);
+    setDentist(updatedDentist);
+    return updatedDentist;
   }
 
   function logout() {
@@ -63,6 +91,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     login,
     register,
+    updateDentist,
+    updateDentistProfileImage,
     logout,
   };
 

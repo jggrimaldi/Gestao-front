@@ -68,6 +68,7 @@ export interface DentistResponse {
   email: string;
   cro: string | null;
   role: string;
+  imageUrl: string | null;
 }
 
 export interface DentistRequest {
@@ -75,6 +76,17 @@ export interface DentistRequest {
   email: string;
   password: string;
   cro?: string | null;
+}
+
+export interface DentistUpdateRequest {
+  name: string;
+  email: string;
+  password?: string;
+  cro?: string | null;
+}
+
+export interface DentistUpdateProfileRequest {
+  imageUrl: string | null;
 }
 
 export interface DentistLoginRequest {
